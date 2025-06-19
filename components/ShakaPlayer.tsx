@@ -1,19 +1,25 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import * as shaka from "shaka-player";
-
 
 type Props = {
   manifestUri: string;
   licenseServerUrl: string;
 };
 
+declare global {
+  interface Window {
+    shaka: any;
+  }
+}
+
 export default function ShakaPlayer({ manifestUri, licenseServerUrl }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
-    const player = new shaka.Player(videoRef.current!);
+    if (!window.shaka || !videoRef.current) return;
+
+    const player = new window.shaka.Player(videoRef.current);
 
     player.configure({
       drm: {
@@ -25,8 +31,8 @@ export default function ShakaPlayer({ manifestUri, licenseServerUrl }: Props) {
 
     player
       .load(manifestUri)
-      .then(() => console.log("Video loaded!"))
-      .catch((e) => console.error("Error loading video", e));
+      .then(() => console.log("Shaka video loaded"))
+      .catch((e: any) => console.error("Shaka load error", e));
 
     return () => {
       player.destroy();
