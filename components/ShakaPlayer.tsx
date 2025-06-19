@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import shaka from "shaka-player";
+import * as shaka from "shaka-player";
+
 
 type Props = {
   manifestUri: string;
